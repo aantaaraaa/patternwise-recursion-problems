@@ -37,55 +37,66 @@ public class CombinationSum {
 
 /*
 =============================================================
-📘 Problem Explanation & Solution Outline
+📘 Problem Explanation & Solution Outline (Combination Sum I)
 =============================================================
 
 1️⃣ Problem Statement:
-We are given an array of distinct integers "candidates" and a target.
-We need to find all unique combinations of numbers where the chosen numbers sum to target.
-Each number may be used unlimited times.
+- Given an array of distinct integers "candidates" and a target value.
+- Find all unique combinations where the numbers sum to target.
+- Each number may be used **unlimited times**.
 
 -------------------------------------------------------------
-
 2️⃣ Approach (Backtracking Pattern):
 - Start with an empty combination.
-- At each step, either include the current number (and keep the index same,
-  since we can reuse it) OR skip to the next index.
-- If target == 0 → valid combination, store it.
+- At each step, either:
+  • Include the current number (keep the index same, since we can reuse it)
+  • Skip to the next index.
+- If target == 0 → valid combination, store a copy.
 - If target < 0 → invalid path, backtrack.
-- Backtracking means: after exploring with one number, remove it and try others.
+- Backtracking ensures that after exploring one number, we remove it and try other options.
 
 -------------------------------------------------------------
-
 3️⃣ Example Dry Run:
-Input: candidates = [2,3,6,7], target = 7
+Input: candidates = [2,3,5], target = 8
 
-- Pick 2: [2], target=5
-   - Pick 2: [2,2], target=3
-       - Pick 2: [2,2,2], target=1 (fail, backtrack)
-       - Pick 3: [2,2,3], target=0 ✅ store result
-   - Pick 3: [2,3], target=2 (fail, backtrack)
-- Pick 3: [3], target=4
-   - Pick 3: [3,3], target=1 (fail, backtrack)
-- Pick 6: [6], target=1 (fail)
-- Pick 7: [7], target=0 ✅ store result
+- Pick 2: [2], target=6
+   - Pick 2: [2,2], target=4
+       - Pick 2: [2,2,2], target=2
+           - Pick 2: [2,2,2,2], target=0 ✅ store result
+       - Pick 3: [2,2,3], target=1 (fail, backtrack)
+       - Pick 5: [2,2,5], target=-1 (fail, backtrack)
+   - Pick 3: [2,3], target=3
+       - Pick 3: [2,3,3], target=0 ✅ store result
+       - Pick 5: [2,3,5], target=-2 (fail, backtrack)
+   - Pick 5: [2,5], target=1 (fail, backtrack)
 
-Final Result: [[2,2,3], [7]]
+- Pick 3: [3], target=5
+   - Pick 3: [3,3], target=2
+       - Pick 3: [3,3,3], target=-1 (fail)
+       - Pick 5: [3,3,5], target=-3 (fail)
+   - Pick 5: [3,5], target=0 ✅ store result
+
+- Pick 5: [5], target=3
+   - Pick 5: [5,5], target=-2 (fail)
+
+Final Result: [[2,2,2,2], [2,3,3], [3,5]]
 
 -------------------------------------------------------------
-
 4️⃣ Complexity Analysis:
+
 Time Complexity:
-- Exponential in nature, since we explore many combinations.
-- Rough bound: O(N^(target/minCandidate))
-- Copying combinations also adds O(R*K),
-  where R = number of results, K = average length.
+- Exponential in nature, since we explore all combinations.
+- Rough bound: O(N^(target/minCandidate)), where N = number of candidates.
+- Copying combinations adds O(R*K), where:
+  • R = number of valid combinations
+  • K = average length of a combination
+- Total: O(N^(target/minCandidate) * K)
 
 Space Complexity:
 - Recursion depth: O(target/minCandidate)
-- Path list storage: O(target/minCandidate)
+- Temporary path list: O(target/minCandidate)
 - Result storage: O(R*K)
-So, total space = O(target/minCandidate + R*K)
+- Total: O(target/minCandidate + R*K)
 
 =============================================================
 */
