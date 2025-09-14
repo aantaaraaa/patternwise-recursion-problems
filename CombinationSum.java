@@ -41,62 +41,88 @@ public class CombinationSum {
 =============================================================
 
 1️⃣ Problem Statement:
-- Given an array of distinct integers "candidates" and a target value.
-- Find all unique combinations where the numbers sum to target.
-- Each number may be used **unlimited times**.
+We are given:
+- An array of distinct integers "candidates".
+- A target integer.
+
+We need to return all unique combinations of numbers from "candidates" such that:
+- The numbers sum to the target.
+- Each number can be used **unlimited times**.
+
+⚡ Key Point:
+- "Unlimited times" means if I pick a number, I can reuse it again in the same path.
 
 -------------------------------------------------------------
-2️⃣ Approach (Backtracking Pattern):
-- Start with an empty combination.
-- At each step, either:
-  • Include the current number (keep the index same, since we can reuse it)
-  • Skip to the next index.
-- If target == 0 → valid combination, store a copy.
-- If target < 0 → invalid path, backtrack.
-- Backtracking ensures that after exploring one number, we remove it and try other options.
+2️⃣ Approach (How I would explain in interview):
+I’ll use **backtracking** because:
+- I need to explore all possible subsets of numbers.
+- For each candidate, I have two choices:
+   • Pick it (and stay at same index, since it can be reused).
+   • Skip it (move to the next index).
+
+Steps:
+1. Start with an empty combination.
+2. If target == 0 → we found a valid combination → add to result.
+3. If target < 0 → invalid → stop recursion.
+4. Otherwise:
+   - Add the current number.
+   - Recurse with reduced target.
+   - Backtrack (remove last number).
+5. Explore next candidate.
+
+This ensures we explore all possible ways.
 
 -------------------------------------------------------------
 3️⃣ Example Dry Run:
 Input: candidates = [2,3,5], target = 8
 
-- Pick 2: [2], target=6
-   - Pick 2: [2,2], target=4
-       - Pick 2: [2,2,2], target=2
-           - Pick 2: [2,2,2,2], target=0 ✅ store result
-       - Pick 3: [2,2,3], target=1 (fail, backtrack)
-       - Pick 5: [2,2,5], target=-1 (fail, backtrack)
-   - Pick 3: [2,3], target=3
-       - Pick 3: [2,3,3], target=0 ✅ store result
-       - Pick 5: [2,3,5], target=-2 (fail, backtrack)
-   - Pick 5: [2,5], target=1 (fail, backtrack)
+- Start []
+   - Pick 2 → [2], target=6
+       - Pick 2 → [2,2], target=4
+           - Pick 2 → [2,2,2], target=2
+               - Pick 2 → [2,2,2,2], target=0 ✅ store
+               - Pick 3 → [2,2,2,3], target=-1 ❌ stop
+               - Pick 5 → [2,2,2,5], target=-3 ❌ stop
+           - Pick 3 → [2,2,3], target=1 ❌ stop
+           - Pick 5 → [2,2,5], target=-1 ❌ stop
+       - Pick 3 → [2,3], target=3
+           - Pick 3 → [2,3,3], target=0 ✅ store
+           - Pick 5 → [2,3,5], target=-2 ❌ stop
+       - Pick 5 → [2,5], target=1 ❌ stop
+   - Pick 3 → [3], target=5
+       - Pick 3 → [3,3], target=2
+           - Pick 3 → [3,3,3], target=-1 ❌ stop
+           - Pick 5 → [3,3,5], target=-3 ❌ stop
+       - Pick 5 → [3,5], target=0 ✅ store
+   - Pick 5 → [5], target=3
+       - Pick 5 → [5,5], target=-2 ❌ stop
 
-- Pick 3: [3], target=5
-   - Pick 3: [3,3], target=2
-       - Pick 3: [3,3,3], target=-1 (fail)
-       - Pick 5: [3,3,5], target=-3 (fail)
-   - Pick 5: [3,5], target=0 ✅ store result
-
-- Pick 5: [5], target=3
-   - Pick 5: [5,5], target=-2 (fail)
-
-Final Result: [[2,2,2,2], [2,3,3], [3,5]]
+✅ Final Result: [[2,2,2,2], [2,3,3], [3,5]]
 
 -------------------------------------------------------------
 4️⃣ Complexity Analysis:
 
 Time Complexity:
-- Exponential in nature, since we explore all combinations.
-- Rough bound: O(N^(target/minCandidate)), where N = number of candidates.
-- Copying combinations adds O(R*K), where:
-  • R = number of valid combinations
-  • K = average length of a combination
-- Total: O(N^(target/minCandidate) * K)
+- Worst case: we explore many recursive paths.
+- Approx upper bound: O(N^(target/minCandidate)), where:
+   • N = number of candidates
+   • target/minCandidate = max recursion depth
+- Copying combinations into result costs O(R*K),
+   • R = number of valid results
+   • K = average length of each result
+
+So total: O(N^(target/minCandidate) + R*K)
 
 Space Complexity:
 - Recursion depth: O(target/minCandidate)
 - Temporary path list: O(target/minCandidate)
 - Result storage: O(R*K)
-- Total: O(target/minCandidate + R*K)
 
+-------------------------------------------------------------
+5️⃣ How I would summarize to interviewer:
+"This problem is a classic backtracking problem.
+We recursively try candidates, allow reuse by not incrementing index,
+and backtrack after each exploration.
+The complexity is exponential but acceptable because the input size is small."
 =============================================================
 */
