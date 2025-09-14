@@ -1,14 +1,14 @@
-
 import java.util.*;
 
 public class CombinationSum3 {
-    public static List<List<Integer>> combinationSum3(int k, int n) {
+    
+    public List<List<Integer>> combinationSum3(int k, int n) {
         List<List<Integer>> result = new ArrayList<>();
         backtrack(result, new ArrayList<>(), k, n, 1);
         return result;
     }
 
-    private static void backtrack(List<List<Integer>> result, List<Integer> temp, int k, int remain, int start) {
+    private void backtrack(List<List<Integer>> result, List<Integer> temp, int k, int remain, int start) {
         if (remain == 0 && temp.size() == k) {
             result.add(new ArrayList<>(temp));
             return;
@@ -26,7 +26,9 @@ public class CombinationSum3 {
         Scanner sc = new Scanner(System.in);
         int k = sc.nextInt(); 
         int n = sc.nextInt();  
-        List<List<Integer>> ans = combinationSum3(k, n);
+
+        CombinationSum3 solver = new CombinationSum3();  
+        List<List<Integer>> ans = solver.combinationSum3(k, n);
         System.out.println(ans); 
     }
 }

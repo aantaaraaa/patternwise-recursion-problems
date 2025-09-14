@@ -1,8 +1,9 @@
 import java.util.*;
 
 public class CombinationSum {
-    public static void backtrack(int[] candidates, int target, int index, List<Integer> combination,
-            List<List<Integer>> result) {
+    
+    public void backtrack(int[] candidates, int target, int index, List<Integer> combination,
+                          List<List<Integer>> result) {
         if (target == 0) {
             result.add(new ArrayList<>(combination));
             return;
@@ -16,7 +17,7 @@ public class CombinationSum {
         }
     }
 
-    public static List<List<Integer>> combinationSum(int[] candidates, int target) {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> result = new ArrayList<>();
         backtrack(candidates, target, 0, new ArrayList<>(), result);
         return result;
@@ -30,7 +31,9 @@ public class CombinationSum {
             candidates[i] = sc.nextInt();
         }
         int target = sc.nextInt();
-        List<List<Integer>> result = combinationSum(candidates, target);
+
+        CombinationSum solver = new CombinationSum();  
+        List<List<Integer>> result = solver.combinationSum(candidates, target);
         System.out.println(result);
     }
 }

@@ -2,23 +2,23 @@ import java.util.*;
 
 public class CombinationSum2 {
 
-    public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         List<List<Integer>> result = new ArrayList<>();
         Arrays.sort(candidates);
         backtrack(candidates, target, 0, new ArrayList<>(), result);
         return result;
     }
 
-    private static void backtrack(int[] candidates, int target, int index, List<Integer> combination,
+    private void backtrack(int[] candidates, int target, int index, List<Integer> combination,
             List<List<Integer>> result) {
         if (target == 0) {
             result.add(new ArrayList<>(combination));
             return;
         }
         for (int i = index; i < candidates.length; i++) {
-            if (i > index && candidates[i] == candidates[i - 1])
+            if (i > index && candidates[i] == candidates[i - 1])  // skip duplicates
                 continue;
-            if (candidates[i] > target)
+            if (candidates[i] > target)  // pruning
                 break;
             combination.add(candidates[i]);
             backtrack(candidates, target - candidates[i], i + 1, combination, result);
@@ -34,11 +34,13 @@ public class CombinationSum2 {
             candidates[i] = sc.nextInt();
         }
         int target = sc.nextInt();
-        List<List<Integer>> result = combinationSum2(candidates, target);
+
+        CombinationSum2 solver = new CombinationSum2();  
+        List<List<Integer>> result = solver.combinationSum2(candidates, target);
         System.out.println(result);
+
         sc.close();
     }
-
 }
 
 /*
