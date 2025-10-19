@@ -2,20 +2,56 @@ import java.util.*;
 
 public class PalindromePartitioning {
 
-    public List<List<String>> partition(String s) {
-        /**
-         * Time Complexity: O(n * 2^n)
-         * Space Complexity: O(n) (recursion depth)
-         * 
-         * Backtracking Approach:
-         * -----------------------
-         * 1. Explore all possible partitions of the string.
-         * 2. At each step, choose a substring starting at 'start' index.
-         * 3. If the substring is a palindrome, include it and recurse on the remaining string.
-         * 4. When 'start' reaches the end of the string, add the current list to the result.
-         * 5. Backtrack by removing the last added substring and continue exploring.
-         */
+    /**
+     * Palindrome Partitioning (Backtracking)
+     *
+     * Time Complexity: O(n * 2^n)
+     * Space Complexity: O(n)
+     *
+     * Problem:
+     * Given a string s, partition it such that every substring in each partition
+     * is a palindrome. Return all possible palindrome partitioning of s.
+     *
+     * Core Idea:
+     * Explore all possible substrings starting at each index.
+     * Whenever a palindrome substring is found, include it and recurse for the remaining part.
+     * Backtrack to explore other partitions.
+     *
+     * Recursion Tree Example:
+     * ------------------------
+     * Input: s = "aab"
+     *
+     * Start from index 0:
+     *                     ""
+     *                     |
+     *                   "a"  → palindrome
+     *                     |
+     *                   backtrack("ab")
+     *                    /     \
+     *                 "a"      "ab"
+     *                 |          ❌ not palindrome
+     *               backtrack("b")
+     *                   |
+     *                 "b" ✅
+     *
+     * Valid Partitions:
+     *  - ["a", "a", "b"]
+     *  - ["aa", "b"]
+     *
+     * Tree Representation:
+     * --------------------
+     *                 ""
+     *               /     \
+     *             "a"     "aa"
+     *              |        |
+     *             "a"      "b"
+     *              |        |
+     *             "b"      ✅
+     *              |
+     *              ✅
+     */
 
+    public List<List<String>> partition(String s) {
         List<List<String>> res = new ArrayList<>();
         backtrack(s, 0, new ArrayList<>(), res);
         return res;
@@ -41,9 +77,8 @@ public class PalindromePartitioning {
     private boolean isPalindrome(String str) {
         int left = 0, right = str.length() - 1;
         while (left < right) {
-            if (str.charAt(left++) != str.charAt(right--)) {
+            if (str.charAt(left++) != str.charAt(right--))
                 return false;
-            }
         }
         return true;
     }

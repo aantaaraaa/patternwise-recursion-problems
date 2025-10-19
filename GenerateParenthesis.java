@@ -2,57 +2,83 @@ import java.util.*;
 
 public class GenerateParenthesis {
 
-    public List<String> generateParenthesis(int n) {
+    public void generateParenthesis(int n) {
         /**
          * Time Complexity: O(2^(2n))
-         * Space Complexity: O(2n) (due to recursion stack)
+         * Space Complexity: O(2n)
          * 
          * Brute Force (Recursive) Approach:
          * ---------------------------------
-         * 1. Generate all possible strings of '(' and ')' of length 2n.
-         * 2. For each generated string, check if it is valid.
-         * 3. Add valid strings to the result list.
-         * 4. This approach generates invalid combinations and filters them later.
-         * 5. Very inefficient for large n (exponential growth).
+         * 1. Generate all possible strings made of '(' and ')' of length 2n.
+         * 2. For each generated string, check if it is a valid parentheses sequence.
+         * 3. Add valid ones to the result or print them.
+         * 
+         * Example (n = 2):
+         * All generated combinations: ((), ()), )(), ))(, etc.
+         * Valid only: (()), ()()
+         * 
+         * This is inefficient as it explores invalid sequences too.
          */
 
         /*
-        List<String> res = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         char[] curr = new char[2 * n];
-        bruteForce(res, curr, 0, n);
-        return res;
+        bruteForce(result, curr, 0);
+        for (String s : result) {
+            System.out.println(s);
+        }
         */
 
         /**
          * Time Complexity: O(4^n / √n)
-         * Space Complexity: O(2n) (recursion + string building)
+         * Space Complexity: O(2n) (recursion stack + string builder)
          * 
-         * Optimal (Recursive Backtracking) Approach:
-         * ------------------------------------------
-         * 1. Use recursion to build strings only when valid.
-         * 2. Add '(' if open < n.
-         * 3. Add ')' if close < open.
-         * 4. Stop when string length == 2 * n (means valid sequence complete).
-         * 5. Backtrack after each recursive call to explore other combinations.
-         * 6. Produces only valid combinations efficiently.
+         * Optimal (Recursive / Backtracking) Approach:
+         * --------------------------------------------
+         * 1. Start with an empty string "".
+         * 2. You can add '(' if open < n.
+         * 3. You can add ')' if close < open.
+         * 4. When the string length == 2n, print it (base case).
+         * 
+         * Example (n = 3):
+         * backtrack("", open=0, close=0)
+         * ├── "(" → open=1, close=0
+         * │    ├── "((" → open=2, close=0
+         * │    │    ├── "(((" → open=3, close=0
+         * │    │    │    ├── "((()" → open=3, close=1
+         * │    │    │    │    ├── "((())" → open=3, close=2
+         * │    │    │    │    │    ├── "((()))" ✅ print
+         * │    │    │    │    └── backtrack done
+         * │    │    ├── "(()" → open=2, close=1
+         * │    │    │    ├── "(())" → open=2, close=2
+         * │    │    │    │    ├── "(())(" → open=3, close=2
+         * │    │    │    │    │    ├── "(())()" ✅ print
+         * │    │    │    │    └── backtrack done
+         * │    ├── "()(" → open=2, close=1
+         * │    │    ├── "()((" → open=3, close=1
+         * │    │    │    ├── "()(()" → open=3, close=2
+         * │    │    │    │    ├── "()(())" ✅ print
+         * │    │    └── "()()" → open=2, close=2
+         * │    │         ├── "()()(" → open=3, close=2
+         * │    │         │    ├── "()()()" ✅ print
+         * │    │         └── backtrack done
          */
 
-        List<String> res = new ArrayList<>();
-        backtrack(res, new StringBuilder(), 0, 0, n);
-        return res;
+        backtrack("", 0, 0, n);
     }
 
     // ------------------- BRUTE FORCE -------------------
-    private void bruteForce(List<String> res, char[] curr, int i, int n) {
+    /*
+    private void bruteForce(List<String> res, char[] curr, int i) {
         if (i == curr.length) {
             if (isValid(curr)) res.add(new String(curr));
             return;
         }
 
         curr[i] = '(';
-        bruteForce(res, curr, i + 1, n);
+        bruteForce(res, curr, i + 1);
         curr[i] = ')';
-        bruteForce(res, curr, i + 1, n);
+        bruteForce(res, curr, i + 1);
     }
 
     private boolean isValid(char[] s) {
@@ -64,40 +90,31 @@ public class GenerateParenthesis {
         }
         return bal == 0;
     }
+    */
 
     // ------------------- OPTIMAL BACKTRACKING -------------------
-    private void backtrack(List<String> res, StringBuilder curr, int open, int close, int n) {
-        if (curr.length() == 2 * n) {
-            res.add(curr.toString());
+    private void backtrack(String current, int open, int close, int n) {
+        if (current.length() == 2 * n) {
+            System.out.println(current);
             return;
         }
 
-        if (open < n) {
-            curr.append('(');
-            backtrack(res, curr, open + 1, close, n);
-            curr.deleteCharAt(curr.length() - 1); // backtrack
-        }
+        if (open < n)
+            backtrack(current + "(", open + 1, close, n);
 
-        if (close < open) {
-            curr.append(')');
-            backtrack(res, curr, open, close + 1, n);
-            curr.deleteCharAt(curr.length() - 1); // backtrack
-        }
+        if (close < open)
+            backtrack(current + ")", open, close + 1, n);
     }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter n (number of pairs): ");
+
+        System.out.print("Enter number of pairs (n): ");
         int n = sc.nextInt();
 
         GenerateParenthesis obj = new GenerateParenthesis();
-
-        List<String> combinations = obj.generateParenthesis(n);
-
-        System.out.println("All valid parentheses combinations:");
-        for (String s : combinations) {
-            System.out.println(s);
-        }
+        System.out.println("\nAll valid parentheses combinations for n = " + n + ":");
+        obj.generateParenthesis(n);
 
         sc.close();
     }

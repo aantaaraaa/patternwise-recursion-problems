@@ -2,24 +2,45 @@ import java.util.*;
 
 public class NQueens {
 
-    public List<List<String>> solveNQueens(int n) {
-        /**
-         * Time Complexity: O(N!)
-         * Space Complexity: O(N^2)
-         * 
-         * Backtracking Approach:
-         * -----------------------
-         * 1. Place one queen per row.
-         * 2. For each row, try placing the queen in each column.
-         * 3. Before placing, check if the position is safe:
-         *      - No other queen in the same column.
-         *      - No other queen on the upper-left or upper-right diagonal.
-         * 4. If safe, place the queen and recurse to the next row.
-         * 5. If not safe, try next column.
-         * 6. Once all queens are placed, add the board configuration to the result.
-         * 7. Backtrack by removing the last placed queen and continue exploring.
-         */
+    /**
+     * N-Queens Problem (Backtracking)
+     *
+     * Time Complexity: O(N!)
+     * Space Complexity: O(N^2)
+     *
+     * Problem:
+     * Place N queens on an N×N chessboard such that no two queens attack each other.
+     *
+     * Key Constraints:
+     * - Only one queen per row.
+     * - No two queens share the same column.
+     * - No two queens share the same diagonal.
+     *
+     * Recursion Tree Example:
+     * ------------------------
+     * Input: N = 4
+     *
+     * Step 1: Try placing queen row by row.
+     *
+     *                          Row 0
+     *                       /    |    |    \
+     *                    C0     C1   C2    C3
+     *                    ❌     ✅    ❌    ✅
+     *                     |            |
+     *                  Row 1        Row 1
+     *                / | \          / | \
+     *              ...             ...
+     *
+     * For N = 4, valid configurations:
+     *  - [".Q..", "...Q", "Q...", "..Q."]
+     *  - ["..Q.", "Q...", "...Q", ".Q.."]
+     *
+     * Each recursive level corresponds to one row.
+     * Each branch explores a different column choice for that row.
+     * Backtracking occurs whenever a placement violates safety rules.
+     */
 
+    public List<List<String>> solveNQueens(int n) {
         List<List<String>> res = new ArrayList<>();
         char[][] board = new char[n][n];
         for (char[] row : board) Arrays.fill(row, '.');

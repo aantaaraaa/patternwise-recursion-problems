@@ -2,50 +2,40 @@ import java.util.*;
 
 public class LetterCombinations {
 
+    /**
+     * Letter Combinations of a Phone Number (Backtracking)
+     *
+     * Time Complexity: O(4^N)
+     * Space Complexity: O(N)
+     *
+     * Problem:
+     * Given a string of digits (2–9), return all possible letter combinations
+     * that the number could represent on a traditional phone keypad.
+     *
+     * Mapping:
+     * 2 → "abc", 3 → "def", 4 → "ghi", 5 → "jkl", 6 → "mno",
+     * 7 → "pqrs", 8 → "tuv", 9 → "wxyz"
+     *
+     * Recursion Tree Example:
+     * ------------------------
+     * Input: digits = "23"
+     *
+     *                     ""
+     *                    / | \
+     *                  a   b   c        ← letters for '2'
+     *                 /|\ /|\ /|\
+     *                d e f d e f d e f  ← letters for '3'
+     *
+     * Output:
+     * ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+     *
+     * Key Idea:
+     * 1. Each recursion level corresponds to one digit.
+     * 2. At each level, explore all letters mapped to that digit.
+     * 3. When the index reaches digits.length(), add the combination to the result.
+     */
+
     public List<String> letterCombinations(String digits) {
-        /**
-         * Time Complexity: O(4^N)
-         * Space Complexity: O(N)
-         * 
-         * Brute Force (Iterative) Approach:
-         * ---------------------------------
-         * 1. Use a queue to store partial combinations.
-         * 2. For each digit, expand all existing combinations by adding its corresponding letters.
-         * 3. Continue until all digits are processed.
-         * 4. Return the list of completed combinations.
-         */
-
-        /*
-        if (digits == null || digits.length() == 0) return new ArrayList<>();
-        String[] map = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-        Queue<String> queue = new LinkedList<>();
-        queue.add("");
-        for (char d : digits.toCharArray()) {
-            int size = queue.size();
-            String letters = map[d - '0'];
-            for (int i = 0; i < size; i++) {
-                String prefix = queue.poll();
-                for (char c : letters.toCharArray()) {
-                    queue.add(prefix + c);
-                }
-            }
-        }
-        return new ArrayList<>(queue);
-        */
-
-        /**
-         * Time Complexity: O(4^N)
-         * Space Complexity: O(N)
-         * 
-         * Optimal (Recursive Backtracking) Approach:
-         * ------------------------------------------
-         * 1. If the input is empty, return an empty list.
-         * 2. For each digit, retrieve its corresponding letters from a predefined map.
-         * 3. Build combinations by appending one letter at a time recursively.
-         * 4. Stop when all digits are processed and store the complete combination.
-         * 5. Return all generated combinations.
-         */
-
         List<String> result = new ArrayList<>();
         if (digits == null || digits.isEmpty()) return result;
 

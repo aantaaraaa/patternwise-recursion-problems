@@ -2,67 +2,40 @@ import java.util.*;
 
 public class CombinationSumII {
 
+    /**
+     * Combination Sum II (Backtracking with Duplicate Handling)
+     *
+     * Time Complexity: O(2^N)
+     * Space Complexity: O(N)
+     *
+     * Recursion Tree Example:
+     * ------------------------
+     * Input: candidates = [10, 1, 2, 7, 6, 1, 5], target = 8
+     * After Sorting: [1, 1, 2, 5, 6, 7, 10]
+     *
+     *                                   (start=0, target=8)
+     *                                 /       |        |        \
+     *                            +1  v    +1  v     +2  v     +5  v  ...
+     *                          (1,7)    (2,7)    (3,6)    (4,3)
+     *                           /          |         \      
+     *                      +1  v        +2  v       +6  v
+     *                     (2,6)       (3,5)       (5,0) ✅ [1,2,5]
+     *                      /              \
+     *                 +2  v               +5  v
+     *               (3,4)               (4,0) ✅ [1,7]
+     *
+     * Valid Paths:
+     *  - [1, 1, 6]
+     *  - [1, 2, 5]
+     *  - [1, 7]
+     *  - [2, 6]
+     *
+     * Key Idea:
+     * Each recursive layer represents selecting the next unique element (no repeats at the same depth).
+     * Duplicates are skipped using: if (i > start && nums[i] == nums[i - 1]) continue;
+     */
+
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        /**
-         * Time Complexity: O(2^N)
-         * Space Complexity: O(N)
-         * 
-         * Brute Force (Iterative) Approach:
-         * ---------------------------------
-         * 1. Sort the candidates array to handle duplicates easily.
-         * 2. Use a stack to simulate recursion.
-         * 3. Each stack element stores (index, remaining target, current combination).
-         * 4. Skip consecutive duplicates at the same recursion depth.
-         * 5. Stop when remaining target == 0.
-         */
-
-        /*
-        Arrays.sort(candidates);
-        List<List<Integer>> result = new ArrayList<>();
-        Stack<int[]> stack = new Stack<>();
-        Stack<List<Integer>> combos = new Stack<>();
-
-        stack.push(new int[]{0, target});
-        combos.push(new ArrayList<>());
-
-        while (!stack.isEmpty()) {
-            int[] state = stack.pop();
-            int start = state[0];
-            int remain = state[1];
-            List<Integer> current = combos.pop();
-
-            if (remain == 0) {
-                result.add(new ArrayList<>(current));
-                continue;
-            }
-
-            for (int i = start; i < candidates.length; i++) {
-                if (i > start && candidates[i] == candidates[i - 1]) continue;
-                if (candidates[i] > remain) break;
-
-                List<Integer> next = new ArrayList<>(current);
-                next.add(candidates[i]);
-                stack.push(new int[]{i + 1, remain - candidates[i]});
-                combos.push(next);
-            }
-        }
-
-        return result;
-        */
-
-        /**
-         * Time Complexity: O(2^N)
-         * Space Complexity: O(N)
-         * 
-         * Optimal (Recursive Backtracking) Approach:
-         * ------------------------------------------
-         * 1. Sort candidates to handle duplicates.
-         * 2. Explore all combinations recursively.
-         * 3. Each element can be used only once per combination.
-         * 4. Skip consecutive duplicates at the same recursion depth.
-         * 5. Add valid combinations (when target == 0) to the result.
-         */
-
         Arrays.sort(candidates);
         List<List<Integer>> result = new ArrayList<>();
         backtrack(candidates, 0, target, new ArrayList<>(), result);

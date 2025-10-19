@@ -2,65 +2,38 @@ import java.util.*;
 
 public class CombinationSumIII {
 
+    /**
+     * Combination Sum III (Backtracking)
+     *
+     * Time Complexity: O(C(9, k))
+     * Space Complexity: O(k)
+     *
+     * Recursion Tree Example:
+     * ------------------------
+     * Input: k = 3, n = 7
+     * Using numbers 1 to 9
+     *
+     *                        (start=1, k=3, target=7)
+     *                         /    |     |     \
+     *                     +1 v   +2 v  +3 v   +4 v  ...
+     *                   (2,2,6) (3,2,5) (4,2,4) ...
+     *                     |       |       |
+     *                 +2  v   +3  v   +4  v
+     *              (3,3,4)  (4,3,2) (5,3,0)
+     *                                 ✅ [1,2,4]
+     *
+     * Valid Combinations:
+     *  - [1, 2, 4]
+     *
+     * Key Insights:
+     * 1. Each number 1–9 can be used at most once.
+     * 2. Recursion stops when:
+     *       - target == 0 and size == k → valid combination
+     *       - target < 0 or size > k → invalid path
+     * 3. Next recursive call always uses i + 1 (no repetition).
+     */
+
     public List<List<Integer>> combinationSum3(int k, int n) {
-        /**
-         * Time Complexity: O(C(9, k))
-         * Space Complexity: O(k)
-         * 
-         * Brute Force (Iterative) Approach:
-         * ---------------------------------
-         * 1. Use numbers 1 through 9.
-         * 2. Use a stack to simulate recursion.
-         * 3. Each stack element stores (next number, remaining sum, current list).
-         * 4. When the current list size == k and sum == 0, store the combination.
-         * 5. Stop when next number exceeds 9 or sum < 0.
-         */
-
-        /*
-        List<List<Integer>> result = new ArrayList<>();
-        Stack<int[]> stack = new Stack<>();
-        Stack<List<Integer>> combos = new Stack<>();
-
-        stack.push(new int[]{1, n});
-        combos.push(new ArrayList<>());
-
-        while (!stack.isEmpty()) {
-            int[] state = stack.pop();
-            int start = state[0];
-            int remain = state[1];
-            List<Integer> current = combos.pop();
-
-            if (remain == 0 && current.size() == k) {
-                result.add(new ArrayList<>(current));
-                continue;
-            }
-
-            if (remain < 0 || current.size() > k) continue;
-
-            for (int i = 9; i >= start; i--) {
-                List<Integer> next = new ArrayList<>(current);
-                next.add(i);
-                stack.push(new int[]{i + 1, remain - i});
-                combos.push(next);
-            }
-        }
-
-        return result;
-        */
-
-        /**
-         * Time Complexity: O(C(9, k))
-         * Space Complexity: O(k)
-         * 
-         * Optimal (Recursive Backtracking) Approach:
-         * ------------------------------------------
-         * 1. Explore all combinations using numbers 1 through 9.
-         * 2. Each number can be used only once.
-         * 3. Track both the sum (n) and count (k).
-         * 4. When sum == 0 and size == k, store the valid combination.
-         * 5. Stop when sum < 0 or size exceeds k.
-         */
-
         List<List<Integer>> result = new ArrayList<>();
         backtrack(1, k, n, new ArrayList<>(), result);
         return result;

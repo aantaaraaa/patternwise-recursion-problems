@@ -4,7 +4,7 @@ public class CountGoodNumbers {
 
     static final long MOD = 1000000007L;
 
-    public long countGoodNumbers(long n) {
+    public int countGoodNumbers(long n) {
         /**
          * Time Complexity: O(n)
          * Space Complexity: O(1)
@@ -18,9 +18,6 @@ public class CountGoodNumbers {
          * 3. Take modulo after every multiplication to prevent overflow.
          * 4. Return ans % MOD.
          * 
-         * This approach works correctly but is inefficient for large n
-         * (up to 10^15) since it performs O(n) multiplications.
-         * 
          * Example:
          * n = 4 → indices 0,1,2,3
          * even indices = 0,2 → 5 choices each
@@ -29,48 +26,15 @@ public class CountGoodNumbers {
          */
 
         /*
-        long ans = 1;
-        for (long i = 0; i < n; i++) {
-            if (i % 2 == 0)
-                ans = (ans * 5) % MOD;
-            else
-                ans = (ans * 4) % MOD;
-        }
-        return ans;
-        */
-
-        /**
-         * Time Complexity: O(log n)
-         * Space Complexity: O(1)
-         * 
-         * Optimal (Iterative - Exponentiation by Squaring) Approach:
-         * ----------------------------------------------------------
-         * Observation:
-         * - Even indices → 5 choices each
-         * - Odd indices  → 4 choices each
-         * 
-         * Let:
-         * evenCount = (n + 1) / 2
-         * oddCount  = n / 2
-         * 
-         * Therefore:
-         * total = (5^evenCount * 4^oddCount) % MOD
-         * 
-         * Steps:
-         * 1. Calculate evenCount and oddCount.
-         * 2. Compute power(5, evenCount) % MOD.
-         * 3. Compute power(4, oddCount) % MOD.
-         * 4. Multiply both parts under modulo and return.
+         * long ans = 1;
+         * for (long i = 0; i < n; i++) {
+         *     if (i % 2 == 0)
+         *         ans = (ans * 5) % MOD;
+         *     else
+         *         ans = (ans * 4) % MOD;
+         * }
+         * return ans;
          */
-
-        long evenCount = (n + 1) / 2;
-        long oddCount = n / 2;
-
-        /*
-        long part1 = powerIterative(5, evenCount);
-        long part2 = powerIterative(4, oddCount);
-        return (part1 * part2) % MOD;
-        */
 
         /**
          * Time Complexity: O(log n)
@@ -78,63 +42,68 @@ public class CountGoodNumbers {
          * 
          * Optimal (Recursive - Exponentiation by Squaring) Approach:
          * ----------------------------------------------------------
-         * Instead of iterative squaring, recursion can be used to
-         * divide the exponent by 2 in each step.
+         * 1. Even indices → 5 choices each.
+         * 2. Odd indices → 4 choices each.
+         * 3. Let:
+         *      evenCount = (n + 1) / 2
+         *      oddCount  = n / 2
+         * 4. Result = (5^evenCount * 4^oddCount) % MOD
          * 
-         * Steps:
-         * 1. Base case: if exp == 0 → return 1
-         * 2. Recursively compute half = powerRecursive(base, exp / 2)
-         * 3. Square the result and take modulo.
-         * 4. If exp is odd → multiply once more by base and take modulo.
+         * Recursion Tree Example (for power(5, 5)):
+         * ------------------------------------------
+         * power(5, 5)
+         * ├── half = power(5, 2)
+         * │     ├── half = power(5, 1)
+         * │     │     ├── half = power(5, 0) → base → 1
+         * │     │     └── exp = 1 → odd → return (1 * 1 * 5) % MOD = 5
+         * │     └── exp = 2 → even → return (5 * 5) % MOD = 25
+         * └── exp = 5 → odd → return (25 * 25 * 5) % MOD = 3125 % MOD
+         *
+         * Stack Unwinding:
+         * power(0) = 1
+         * power(1) = 5
+         * power(2) = 25
+         * power(5) = 3125
+         *
+         * Thus, 5^5 = 3125
          */
 
-        long part1 = powerRecursive(5, evenCount);
-        long part2 = powerRecursive(4, oddCount);
+        if (n == 0)
+            return 1;
 
-        return (part1 * part2) % MOD;
+        long evenCount = (n + 1) / 2;
+        long oddCount = n / 2;
+
+        long part1 = power(5, evenCount);
+        long part2 = power(4, oddCount);
+
+        return (int)((part1 * part2) % MOD);
     }
 
-    private long powerRecursive(long base, long exp) {
+    private long power(long base, long exp) {
         if (exp == 0)
             return 1;
 
-        long half = powerRecursive(base, exp / 2);
-        long result = (half * half) % MOD;
+        long half = power(base, exp / 2);
 
-        if (exp % 2 != 0)
-            result = (result * base) % MOD;
-
-        return result;
+        if (exp % 2 == 0)
+            return (half * half) % MOD;
+        else
+            return (half * half * base) % MOD;
     }
-
-    /**
-     * Iterative version of power function (for reference)
-     * ---------------------------------------------------
-     * private long powerIterative(long base, long exp) {
-     *     long result = 1;
-     *     base = base % MOD;
-     * 
-     *     while (exp > 0) {
-     *         if ((exp & 1) == 1)
-     *             result = (result * base) % MOD;
-     * 
-     *         base = (base * base) % MOD;
-     *         exp >>= 1;
-     *     }
-     * 
-     *     return result;
-     * }
-     */
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
         System.out.print("Enter n: ");
         long n = sc.nextLong();
 
         CountGoodNumbers obj = new CountGoodNumbers();
-        long count = obj.countGoodNumbers(n);
+        long result = obj.countGoodNumbers(n);
 
-        System.out.println("Count of good numbers: " + count);
+        System.out.println("Count of good numbers: " + result);
+
         sc.close();
     }
 }
+

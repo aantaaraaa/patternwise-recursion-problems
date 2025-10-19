@@ -2,65 +2,45 @@ import java.util.*;
 
 public class PowXN {
 
+    /**
+     * Power Function (x^n) — Exponentiation by Squaring
+     *
+     * Time Complexity: O(log n)
+     * Space Complexity: O(log n)  (recursion depth)
+     *
+     * Problem:
+     * Compute x raised to the power n (xⁿ), where n can be negative.
+     *
+     * Core Idea:
+     * Use divide-and-conquer:
+     *  - xⁿ = (xⁿ/²)²       if n is even
+     *  - xⁿ = (xⁿ/²)² * x   if n is odd
+     *
+     * Handle negatives by converting:
+     *  x⁻ⁿ = (1/x)ⁿ
+     *
+     * Recursion Tree Example:
+     * ------------------------
+     * Input: x = 2, n = 5
+     *
+     *                 helper(2, 5)
+     *                   /     \
+     *        helper(2, 2)       odd → *2
+     *          /     \
+     * helper(2, 1)    even → square
+     *     |
+     * helper(2, 0) → 1
+     *
+     * Computation Flow:
+     * helper(0) = 1
+     * helper(1) = 2
+     * helper(2) = 2² = 4
+     * helper(5) = 4² * 2 = 32
+     *
+     * Result = 32
+     */
+
     public double myPow(double x, int n) {
-        /**
-         * Time Complexity: O(n)
-         * Space Complexity: O(1)
-         * 
-         * Brute Force (Iterative) Approach:
-         * ---------------------------------
-         * 1. Initialize result = 1.
-         * 2. If n is negative, take reciprocal of x (x = 1/x) and make n positive.
-         * 3. Multiply result by x exactly n times.
-         * 4. Return the result.
-         * 
-         * This approach is simple and correct, but inefficient for large n,
-         * because it requires O(n) multiplications.
-         * 
-         * Example:
-         * x = 2, n = 5
-         * result = 1
-         * result = result * 2 → 2
-         * result = result * 2 → 4
-         * result = result * 2 → 8
-         * result = result * 2 → 16
-         * result = result * 2 → 32
-         * return 32
-         */
-
-        /*
-         * double result = 1.0;
-         * long exp = n;
-         * 
-         * if (exp < 0) {
-         *     x = 1 / x;
-         *     exp = -exp;
-         * }
-         * 
-         * for (long i = 0; i < exp; i++) {
-         *     result *= x;
-         * }
-         * 
-         * return result;
-         */
-
-        /**
-         * Time Complexity: O(log n)
-         * Space Complexity: O(1)
-         * 
-         * Optimal (Iterative - Exponentiation by Squaring) Approach:
-         * ----------------------------------------------------------
-         * 1. Handle edge cases: n == 0 or x == 0.
-         * 2. Convert n to long to prevent overflow when n == Integer.MIN_VALUE.
-         * 3. If n is negative, take reciprocal of x and make n positive.
-         * 4. Initialize result = 1.
-         * 5. While n > 0:
-         *    - If n is odd, multiply result by x.
-         *    - Square x.
-         *    - Divide n by 2.
-         * 6. Return result.
-         */
-
         if (n == 0)
             return 1.0;
         if (x == 0)
@@ -72,50 +52,19 @@ public class PowXN {
             exp = -exp;
         }
 
-        /*
-         * double result = 1.0;
-         * 
-         * while (exp > 0) {
-         *     if ((exp & 1) == 1)
-         *         result *= x;
-         * 
-         *     x *= x;
-         *     exp >>= 1;
-         * }
-         * 
-         * return result;
-         */
-
-        /**
-         * Time Complexity: O(log n)
-         * Space Complexity: O(log n) (due to recursion stack)
-         * 
-         * Optimal (Recursive - Exponentiation by Squaring) Approach:
-         * ----------------------------------------------------------
-         * 1. Handle edge cases: n == 0 or x == 0.
-         * 2. Convert n to long to prevent overflow when n == Integer.MIN_VALUE.
-         * 3. If n is negative, take reciprocal of x and make n positive.
-         * 4. Recursively compute:
-         *    - Base case: n == 0 → return 1
-         *    - Recursive case: compute half = helper(x, n / 2)
-         *      * if n even → return half * half
-         *      * if n odd  → return half * half * x
-         */
-
-        return helper(x, exp, 1.0);
+        return helper(x, exp);
     }
 
-    private double helper(double x, long exp, double result) {
+    private double helper(double x, long exp) {
         if (exp == 0)
-            return result;
+            return 1.0;
 
-        if ((exp & 1) == 1)
-            result *= x;
+        double half = helper(x, exp / 2);
 
-        x *= x;
-        exp /= 2;
-
-        return helper(x, exp, result);
+        if (exp % 2 == 0)
+            return half * half;
+        else
+            return half * half * x;
     }
 
     public static void main(String[] args) {
@@ -128,9 +77,9 @@ public class PowXN {
         int n = sc.nextInt();
 
         PowXN obj = new PowXN();
-        double power = obj.myPow(x, n);
+        double result = obj.myPow(x, n);
 
-        System.out.println("Result: " + power);
+        System.out.println("Result: " + result);
 
         sc.close();
     }
